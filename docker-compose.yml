@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  web:
+    # Container name
+    container_name: web
+    # Get the app Dockerfile to build the app image
+    build: .
+    # Set the environment variables for the app
+    environment:
+      - PG_USER=gatekeeper
+      - PG_PASSWORD=youshallnotpass
+      - PG_HOST=db
+      - PG_DB=library_db
+      - PG_PORT=5432
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+  db:
+    #container name
+    container_name: db
+    # Base it off the official PostgreSQL image
+    image: postgres:13
+    # Set up enviroment variables for the DB
+    environment:
+      - POSTGRES_DB=library_db
+      - POSTGRES_USER=gatekeeper
+      - POSTGRES_PASSWORD=youshallnotpass
+    # Expose the 5432 for the DB
+    ports:
+      - 5432:5432
+    # Declare the volume for the DB persistance
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+# Define the volume for the DB data
+volumes:
+  db_data: {}
